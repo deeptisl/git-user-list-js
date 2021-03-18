@@ -41,9 +41,11 @@ const SearchBox = props => {
 
     function renderUserList(users) {
         return (
-            <Card key={users.id} style={{ width: '50rem', border: '1px solid brown', margin: '5px' }} onClick={() => getDetails(users.name)}>
-                <Card.Body>{users.name}</Card.Body>
-            </Card>
+            <a href style={{ cursor: "pointer" }} onClick={() => getDetails(users.name)}>
+                <Card key={users.id} style={{ width: '50rem', border: '1px solid brown', margin: '5px' }} >
+                    <Card.Body>{users.name}</Card.Body>
+                </Card>
+            </a>
         )
     }
 
