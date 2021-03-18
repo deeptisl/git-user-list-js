@@ -1,8 +1,8 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import { connect } from "react-redux";
-import { searchGithubUser, getUserDetails, resetUserDetails } from '../../Redux/Action/index';
-import UserDetails from '../Users/UserDetails';
+import { searchGithubUser, getUserDetails, resetUserDetails } from '../../Redux/actions/index';
+import UserDetails from '../users/UserDetails';
 import axios from 'axios';
 import './SearchBox.css';
 
@@ -11,54 +11,62 @@ const SearchBox = props => {
     const [isLoading, setIsLoading] = useState(false);
     const [gitUserList, setGitUserList] = useState([]);
     const [isUserDetails, setIsUserDetails] = useState(false);
-    const [isClick, setIsClick] = useState(false);
+    const [isGitUserList, setIsGitUserList] = useState(false);
 
     useEffect(() => {
         setGitUserList([]);
         setIsUserDetails(false);
     }, [username])
 
+    useEffect(() => {
+        setGitUserList(props.usersList);
+    }, [props.usersList])
 
+    // useEffect(() => {
+    //     if (props.userDetails) {
+    //         setIsUserDetails(true);
+    //     }
+    // }, [props.userDetails])
+
+    console.log('details', isUserDetails)
 
     function handleSearch(event) {
         event.preventDefault();
         setIsLoading(true);
         setIsUserDetails(false);
-        setIsClick(false);
-        axios.get(`https://api.github.com/users/${username}/repos`).then(response => {
-            if (response.data) {
-                console.log('props.usersList', response.data)
-                props.resetUserDetailsAction();
-                setGitUserList(response.data);
-                setIsLoading(false);
-            }
-            else {
-                setIsLoading(false);
-                setIsClick(true)
-            }
-        }).catch(() => {
-            setIsLoading(false);
-            setIsClick(true);
-        })
-
-        // props.searchGithubUserAction(username).then(() => {
-        //     if (props.usersList) {
-        //         console.log('props.usersList', props.usersList)
+        // axios.get(`https://api.github.com/users/${username}/repos`).then(response => {
+        //     if (response.data) {
+        //         console.log('props.usersList', response.data)
         //         props.resetUserDetailsAction();
-        //         setGitUserList(props.usersList);
+        //         setGitUserList(response.data);
         //         setIsLoading(false);
         //     }
         //     else {
         //         setIsLoading(false);
         //         setIsClick(true)
         //     }
+        // }).catch(() => {
+        //     setIsLoading(false);
+        //     setIsClick(true);
         // })
 
+        props.searchGithubUserAction(username).then(() => {
+            if (props.usersList) {
+                setIsGitUserList(true);
+                props.resetUserDetailsAction();
+                setIsLoading(false);
+            }
+            else {
+                setIsLoading(false);
+            }
+        }).catch(() => {
+            setIsLoading(false);
+        })
     }
 
     function renderUserList(users) {
         return (
-            <Card key={users.id} style={{ width: '50rem' }} onClick={() => getDetails(users.name)}>
+            <Card key={users.id} style={{ width: '50rem', border: '1px solid brown', margin: '5px' }} onClick={() => getDetails(users.name)}>
                 <Card.Body>{users.name}</Card.Body>
             </Card>
         )
@@ -82,19 +90,25 @@ const SearchBox = props => {
                     <Col sm={4}>
                         <Button type="button" onClick={handleSearch}>{isLoading ? 'Searching...' : 'Search'}</Button>
                     </Col>
+
                 </Form.Group>
                 {
                     (gitUserList.length > 0 && !isUserDetails) && (
-                        gitUserList.map(renderUserList)
-                    )
-                }
-                {
-                    isClick && (
-                        <Card style={{ width: '50rem' }} >
-                            <Card.Body>No Record Found</Card.Body>
+                        <Card style={{ width: '50rem', padding: '10px' }} >
+                            <Card.Body>Total Number of Repository:- {gitUserList.length} </Card.Body>
                         </Card>
                     )
                 }
+                {
+                    (isGitUserList && !isUserDetails) && (
+                        (gitUserList.length > 0) ?
+                            gitUserList.map(renderUserList) :
+                            <Card style={{ width: '50rem' }} >
+                                <Card.Body>No Record Found</Card.Body>
+                            </Card>
+                    )
+                }
+
             </Form>
             {
                 isUserDetails && (<UserDetails />)
@@ -103,7 +117,7 @@ const SearchBox = props => {
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         usersList: state.usersList,
         userDetails: state.userDetails

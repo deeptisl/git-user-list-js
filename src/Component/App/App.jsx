@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { Navbar } from 'react-bootstrap';
-import SearchBox from '../SearchBox/SearchBox';
+import SearchBox from '../searchBox/SearchBox';
 
 
 function App() {
