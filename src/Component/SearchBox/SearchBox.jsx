@@ -3,7 +3,6 @@ import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import { connect } from "react-redux";
 import { searchGithubUser, getUserDetails, resetUserDetails } from '../../Redux/actions/index';
 import UserDetails from '../users/UserDetails';
-import axios from 'axios';
 import './SearchBox.css';
 
 const SearchBox = props => {
@@ -22,34 +21,10 @@ const SearchBox = props => {
         setGitUserList(props.usersList);
     }, [props.usersList])
 
-    // useEffect(() => {
-    //     if (props.userDetails) {
-    //         setIsUserDetails(true);
-    //     }
-    // }, [props.userDetails])
-
-    console.log('details', isUserDetails)
-
     function handleSearch(event) {
         event.preventDefault();
         setIsLoading(true);
         setIsUserDetails(false);
-        // axios.get(`https://api.github.com/users/${username}/repos`).then(response => {
-        //     if (response.data) {
-        //         console.log('props.usersList', response.data)
-        //         props.resetUserDetailsAction();
-        //         setGitUserList(response.data);
-        //         setIsLoading(false);
-        //     }
-        //     else {
-        //         setIsLoading(false);
-        //         setIsClick(true)
-        //     }
-        // }).catch(() => {
-        //     setIsLoading(false);
-        //     setIsClick(true);
-        // })
-
         props.searchGithubUserAction(username).then(() => {
             if (props.usersList) {
                 setIsGitUserList(true);
