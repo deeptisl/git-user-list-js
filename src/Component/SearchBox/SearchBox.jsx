@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import { connect } from "react-redux";
 import { searchGithubUser, getUserDetails, resetUserDetails } from '../../Redux/actions/index';
-import UserDetails from '../users/UserDetails';
+import UserDetails from '../Users/UserDetails';
 import './SearchBox.css';
 
 const SearchBox = props => {
